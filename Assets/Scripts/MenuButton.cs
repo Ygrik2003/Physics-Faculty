@@ -7,27 +7,27 @@ public class MenuButton : MonoBehaviour
 {
     private bool isWiggled = false;
     private float rotation = 0.0f;
-    private AudioSource audioSource;
 
     [SerializeField] private float rotateStep = 0.01f;
     [SerializeField] private float rotateMax = 3.0f;
 
-    [SerializeField] private AudioClip highlightedSound;
-    [SerializeField] private AudioClip pressedSound;
+    [SerializeField] AudioClip highlightedClip;
+    [SerializeField] AudioClip pressedClip;
+
+
 
     public void Highlighted()
     {
-        audioSource.PlayOneShot(highlightedSound);
+        SoundSource.Play(highlightedClip);
     }
     public void Pressed()
     {
-        audioSource.PlayOneShot(pressedSound);
+        SoundSource.Play(pressedClip);
     }
 
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();
-        //audioSource.volume *= settings.volumeSound;
+        //SoundSource.source = GetComponent<AudioSource>();
     }
 
     void FixedUpdate()

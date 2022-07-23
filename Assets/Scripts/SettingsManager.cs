@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class GameSettings : MonoBehaviour
+public class SettingsManager : MonoBehaviour
 {
-    //GameSettings Instance { get; set; }
+    public static SettingsManager instance = null;
 
     [Serializable]
     public struct Settings
@@ -21,7 +21,7 @@ public class GameSettings : MonoBehaviour
         public float volumeMusic;
     }
 
-    public Settings settings;
+    public static Settings settings;
     public void saveSettings()
     {
         Debug.Log(JsonUtility.ToJson(settings));
@@ -30,17 +30,36 @@ public class GameSettings : MonoBehaviour
 
     void Start()
     {
+        if (instance != null)
+            return ;
+        instance = this;
+        
+        
+        Debug.Log("It is work");
+        DontDestroyOnLoad(gameObject);
+
+        InitManager();
+    }
+    void Update()
+    {
+        //PlayerPrefs.DeleteAll();
+    }
+
+    private void InitManager()
+    {
         if (PlayerPrefs.HasKey("Settings"))
         {
+            Debug.Log("Import settings from PlayerPrefs");
             settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString("Settings"));
         }
         else
         {
+            Debug.Log("Set settings as default");
             settings.FPS = 60;
 
-            settings.widthScreen = 1600;
-            settings.heightScreen = 900;
-            settings.isFullSreen = true;
+            settings.widthScreen = 900;
+            settings.heightScreen = 450;
+            settings.isFullSreen = false;
 
             settings.volumeMaster = 1;
             settings.volumeSound = 1;
@@ -52,12 +71,5 @@ public class GameSettings : MonoBehaviour
         Screen.SetResolution(settings.widthScreen, settings.heightScreen, settings.isFullSreen);
         Time.fixedDeltaTime = 1f / settings.FPS;
         Application.targetFrameRate = settings.FPS;
-
-        PlayerPrefs.DeleteAll();
-
-    }
-    void Update()
-    {
-        
     }
 }

@@ -4,15 +4,20 @@ using UnityEngine;
 
 public class MusicSource : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public static MusicSource instance;
+    private static AudioSource source;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        if (instance != null)
+            return ;
+        instance = this;
+        source = GetComponent<AudioSource>();
+        DontDestroyOnLoad(gameObject);
+    }
+    public static void Play(AudioClip clip)
+    {
+        source.volume = SettingsManager.settings.volumeMusic * SettingsManager.settings.volumeMaster;
+        source.PlayOneShot(clip);
     }
 }

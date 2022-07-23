@@ -4,31 +4,24 @@ using UnityEngine;
 
 public class SoundSource : MonoBehaviour
 {
-    AudioSource source;
-    [SerializeField] public AudioClip clip;
-    GameSettings gameSettings;
+    public static SoundSource instance = null;
+    public static AudioSource source;
 
-    void Start()
+    public void Start()
     {
+        if (instance != null)
+            return;
+        instance = this;
         source = GetComponent<AudioSource>();
-        if (Resources.FindObjectsOfTypeAll<GameSettings>().Length == 1)
-            gameSettings = Resources.FindObjectsOfTypeAll<GameSettings>()[0];
-        else if (Resources.FindObjectsOfTypeAll<GameSettings>().Length == 0)
-            Debug.Log("This scene haven't object GameSettings");
-        else if (Resources.FindObjectsOfTypeAll<GameSettings>().Length > 1)
-        {
-            gameSettings = Resources.FindObjectsOfTypeAll<GameSettings>()[0];
-            Debug.Log($"This scene have several object's GameSettings");
-
-        }
-        gameSettings.settings.volumeMaster = 0.5f; gameSettings.saveSettings(); 
-        source.volume = gameSettings.settings.volumeMaster;
-        Debug.Log(source.volume);
+        DontDestroyOnLoad(gameObject);
     }
-    void Play()
+
+
+    
+
+    public static void Play(AudioClip clip)
     {
-        source.volume *= gameSettings.settings.volumeSound;
+        source.volume = SettingsManager.settings.volumeSound * SettingsManager.settings.volumeMaster;
         source.PlayOneShot(clip);
-        source.volume = gameSettings.settings.volumeMaster;
     }
 }
