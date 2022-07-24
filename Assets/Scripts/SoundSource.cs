@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class SoundSource : MonoBehaviour
 {
-    public static SoundSource instance = null;
-    public static AudioSource source;
+    private static SoundSource instance = null;
+    private static AudioSource source;
 
-    public void Start()
+    private void Start()
     {
         if (instance != null)
             return;

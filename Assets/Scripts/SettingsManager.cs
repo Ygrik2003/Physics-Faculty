@@ -5,7 +5,7 @@ using System;
 
 public class SettingsManager : MonoBehaviour
 {
-    public static SettingsManager instance = null;
+    private static SettingsManager instance = null;
 
     [Serializable]
     public struct Settings
@@ -22,9 +22,9 @@ public class SettingsManager : MonoBehaviour
     }
 
     public static Settings settings;
-    public void saveSettings()
+    public static void saveSettings()
     {
-        Debug.Log(JsonUtility.ToJson(settings));
+        Debug.Log("Saving settings:\n" + JsonUtility.ToJson(settings));
         PlayerPrefs.SetString("Settings", JsonUtility.ToJson(settings));
     }
 
@@ -34,8 +34,6 @@ public class SettingsManager : MonoBehaviour
             return ;
         instance = this;
         
-        
-        Debug.Log("It is work");
         DontDestroyOnLoad(gameObject);
 
         InitManager();

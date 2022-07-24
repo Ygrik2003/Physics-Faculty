@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MusicSource : MonoBehaviour
 {
-    public static MusicSource instance;
+    private static MusicSource instance = null;
     private static AudioSource source;
 
     private void Start()
