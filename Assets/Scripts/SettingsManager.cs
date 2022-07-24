@@ -26,6 +26,10 @@ public class SettingsManager : MonoBehaviour
     {
         Debug.Log("Saving settings:\n" + JsonUtility.ToJson(settings));
         PlayerPrefs.SetString("Settings", JsonUtility.ToJson(settings));
+
+        Screen.SetResolution(settings.widthScreen, settings.heightScreen, settings.isFullSreen);
+        Time.fixedDeltaTime = 1f / settings.FPS;
+        Application.targetFrameRate = settings.FPS;
     }
 
     void Start()
