@@ -6,20 +6,22 @@ using static System.Math;
 public class BackgroundController : MonoBehaviour
 {
     [SerializeField] private float scaleX = 1.3f;
-    [SerializeField] private float radius = 1.0f;
+    [SerializeField] private float maxRadius = 0.4f;
     [SerializeField] private float stepAngle = 0.01f;
     private float angle = 0;
+    private float radius;
     void Start()
     {
-        transform.localScale = transform.localScale + new Vector3(3, 3, 3);
-        transform.position += new Vector3(scaleX * -2 * radius, 0, 0);
+        transform.localScale *= 1.1f;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position += new Vector3(scaleX * 2 * radius * (float)Sin(angle) * stepAngle, 2 * radius * (float)Cos(angle) * stepAngle, 0);
-        angle += stepAngle;
+        radius = (float)Pow(maxRadius, 2f / angle);
+        transform.position = new Vector3(scaleX * maxRadius * (float)Cos(angle), maxRadius * (float)Sin(angle), transform.position.z);
+        //transform.position = Vector3.MoveTowards(transform.position, transform.position + dir, stepAngle * Time.fixedDeltaTime);
+        angle += stepAngle * Time.fixedDeltaTime; //Can was error after some time
     }
 
 }
