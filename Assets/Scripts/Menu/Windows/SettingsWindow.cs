@@ -14,9 +14,21 @@ public class SettingsWindow : MonoBehaviour
     [SerializeField] private GameObject settingMusicVolume;
     [SerializeField] private GameObject settingSoundVolume;
 
+    SettingsManager.Resolution[] resolutions =
+    {
+        new SettingsManager.Resolution(1920, 1080),
+        new SettingsManager.Resolution(1600, 900),
+        new SettingsManager.Resolution(1366, 768),
+        new SettingsManager.Resolution(1280, 1024),
+        new SettingsManager.Resolution(1200, 900),
+    };
+
     private void Awake()
     {
+        foreach (SettingsManager.Resolution res in resolutions)
+            settingResolution.GetComponentInChildren<TMP_Dropdown>().options.Add(new TMP_Dropdown.OptionData() { text = res.ToString() });
         setVisible(false);
+        
     }
 
     public void setVisible(bool isVisible)
@@ -28,6 +40,10 @@ public class SettingsWindow : MonoBehaviour
             InitSliderEvents(settingMasterVolume, SettingsManager.settings.volumeMaster);
             InitSliderEvents(settingMusicVolume, SettingsManager.settings.volumeMusic);
             InitSliderEvents(settingSoundVolume, SettingsManager.settings.volumeSound);
+
+            settingResolution.GetComponentInChildren<TMP_Dropdown>().value = Utils.IndexOf(resolutions, SettingsManager.settings.resolution);
+            
+            settingFSM.GetComponentInChildren<Toggle>().isOn = SettingsManager.settings.isFullSreen;
         }
     }
 
@@ -75,10 +91,14 @@ public class SettingsWindow : MonoBehaviour
     
     public void SavePressed()
     {
+        String resolution;
+        resolution = settingResolution.GetComponentInChildren<TMP_Dropdown>().captionText.text;
+
         SettingsManager.settings.FPS = Convert.ToInt16(settingFPS.GetComponentInChildren<TMP_InputField>().text);
 
-        //SettingsManager.settings.widthScreen = Convert.ToInt16(settingFPS.GetComponentInChildren<TMP_InputField>().text);
-        //SettingsManager.settings.heightScreen = Convert.ToInt16(settingFPS.GetComponentInChildren<TMP_InputField>().text);
+        SettingsManager.settings.resolution.width = Convert.ToInt16(resolution.Split('x')[0]);
+        SettingsManager.settings.resolution.height = Convert.ToInt16(resolution.Split('x')[1]);
+
         SettingsManager.settings.isFullSreen = settingFSM.GetComponentInChildren<Toggle>().isOn;
 
         SettingsManager.settings.volumeMaster = (float)Convert.ToDouble(settingMasterVolume.GetComponentInChildren<TMP_InputField>().text);

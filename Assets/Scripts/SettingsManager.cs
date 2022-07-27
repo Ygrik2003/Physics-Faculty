@@ -11,14 +11,30 @@ public class SettingsManager : MonoBehaviour
     public struct Settings
     {
         public int FPS;
-        
-        public int widthScreen;
-        public int heightScreen;
+
+        public Resolution resolution;
         public bool isFullSreen;
         
         public float volumeMaster;
         public float volumeSound;
         public float volumeMusic;
+    }
+    [Serializable]
+    public class Resolution
+    {
+        public int width;
+        public int height;
+        public Resolution(int width, int height)
+        {
+            this.width = width;
+            this.height = height;
+        }
+
+
+        public override string ToString()
+        {
+            return width.ToString() + "x" + height.ToString();
+        }
     }
 
     public static Settings settings;
@@ -27,7 +43,7 @@ public class SettingsManager : MonoBehaviour
         Debug.Log("Saving settings:\n" + JsonUtility.ToJson(settings));
         PlayerPrefs.SetString("Settings", JsonUtility.ToJson(settings));
 
-        Screen.SetResolution(settings.widthScreen, settings.heightScreen, settings.isFullSreen);
+        Screen.SetResolution(settings.resolution.width, settings.resolution.height, settings.isFullSreen);
         Time.fixedDeltaTime = 1f / settings.FPS;
         Application.targetFrameRate = settings.FPS;
     }
@@ -53,14 +69,17 @@ public class SettingsManager : MonoBehaviour
         {
             Debug.Log("Import settings from PlayerPrefs");
             settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString("Settings"));
+
+            Screen.SetResolution(settings.resolution.width, settings.resolution.height, settings.isFullSreen);
+            Time.fixedDeltaTime = 1f / settings.FPS;
+            Application.targetFrameRate = settings.FPS;
         }
         else
         {
             Debug.Log("Set settings as default");
             settings.FPS = 60;
 
-            settings.widthScreen = 900;
-            settings.heightScreen = 450;
+            settings.resolution = new Resolution(1600, 900);
             settings.isFullSreen = false;
 
             settings.volumeMaster = 1;
@@ -69,9 +88,5 @@ public class SettingsManager : MonoBehaviour
 
             saveSettings();
         }
-
-        Screen.SetResolution(settings.widthScreen, settings.heightScreen, settings.isFullSreen);
-        Time.fixedDeltaTime = 1f / settings.FPS;
-        Application.targetFrameRate = settings.FPS;
     }
 }
