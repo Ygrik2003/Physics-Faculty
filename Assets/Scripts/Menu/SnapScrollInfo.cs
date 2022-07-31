@@ -24,6 +24,12 @@ public class SnapScrollInfo : MonoBehaviour
     private Vector2[] pansPos;
     private Vector2[] pansScale;
 
+    //[Header ("Other Objects")]
+   // private GameObject buttonPrefab;
+
+    //private GameObject[] instButtons;
+    //private Vector2[] buttonPos;
+
     private RectTransform contentRect;
     private Vector2 contentVector;
     
@@ -36,6 +42,8 @@ public class SnapScrollInfo : MonoBehaviour
         instPans = new GameObject[panCount];
         pansPos = new Vector2[panCount];
         pansScale = new Vector2[panCount];
+        //buttonPos = new Vector2[panCount];
+        //instButtons = new GameObject[panCount];
         for ( int i = 0; i < panCount; i++)
         {
             instPans[i] = Instantiate(panPrefab, transform, false);
@@ -43,6 +51,13 @@ public class SnapScrollInfo : MonoBehaviour
             instPans[i].transform.localPosition = new Vector2(instPans[i - 1].transform.localPosition.x + 
                 panPrefab.GetComponent<RectTransform>().sizeDelta.x + panOffset, instPans[i].transform.localPosition.y);
             pansPos[i] = -instPans[i].transform.localPosition;
+            /* instButtons[i] = Instantiate(buttonPrefab, transform, false);
+             if (i == 0) continue;
+             instButtons[i].transform.localPosition = new Vector2(instButtons[i - 1].transform.localPosition.x +
+                 panPrefab.GetComponent<RectTransform>().sizeDelta.x + panOffset, instButtons[i].transform.localPosition.y);
+             buttonPos[i] = -instButtons[i].transform.localPosition;*/
+            //buttonPos = new Vector2[panCount];
+            //instButtons = new GameObject[panCount];
         }
     }
 
