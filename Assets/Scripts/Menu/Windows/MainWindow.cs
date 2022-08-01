@@ -4,9 +4,11 @@ using static System.Math;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static MenuButton;
 
 public class MainWindow : MonoBehaviour
 {
+
     [SerializeField] [Range(0f,1f)] private float centerOfEllipseX = 0.5f, centerOfEllipseY = 0.55f;         // counting from top
     [SerializeField] [Range(0f,1f)] private float verticalRadius = 0.15f, horizontalRadius = 0.3f;
     [SerializeField] [Range(0f,2f)] private float inputCd = 0.5f;
@@ -22,7 +24,7 @@ public class MainWindow : MonoBehaviour
     private float rotationCurr = 0f, angleBetweenBtns;
     private int numOfBtns;
 
-    private int selectedButton = 0;
+    private BtnType selectedButton = 0;
     private List<RectTransform> btnTransforms = new List<RectTransform>();
     private List<MenuButton> btns = new List<MenuButton>();
     private Transform canvasTransform;
@@ -58,13 +60,12 @@ public class MainWindow : MonoBehaviour
 
     private Vector3 CalcScale()
     {
-        float xyScale = minScale + (Abs( (rotationCurr + 360)%360 - 180 )/180.0f) * (maxScale - minScale);
+        float xyScale = minScale + (Abs( (rotationCurr + 360) % 360 - 180 ) / 180.0f) * (maxScale - minScale);
         return new Vector3( xyScale, xyScale , 1 );
     }
-
     private void RearrangeButtons()
     {
-        int currButtonToDraw = selectedButton;
+        int currButtonToDraw = (int)selectedButton;
         int tempX, tempY;
         while (true)
         {
@@ -73,41 +74,73 @@ public class MainWindow : MonoBehaviour
             btnTransforms[currButtonToDraw].localPosition = new Vector3(tempX, tempY, 0);
             btnTransforms[currButtonToDraw].localScale = CalcScale();
             rotationCurr += angleBetweenBtns;
-            currButtonToDraw = (currButtonToDraw + 1)%numOfBtns;
-            if (currButtonToDraw == selectedButton)
+            currButtonToDraw = (currButtonToDraw + 1) % numOfBtns;
+            if (currButtonToDraw == (int)selectedButton)
                 break;
         }
         rotationCurr -= 360;
     }
-
-    public void setVisible(bool isVisible)
+    public void SwitchToStart()
     {
-        gameObject.SetActive(isVisible);
+        if (selectedButton != BtnType.Start) return;
+            SceneManager.LoadScene("GameScene");
     }
-    public void StartPressed()
+    public void SwitchToInfo(GameObject window)
     {
-        setVisible(false);
-        SceneManager.LoadScene("GameScene");
+        if (selectedButton != BtnType.Info) return;
+            window.SetActive(true);
     }
-    public void InfoPressed()
+    public void SwitchToSettings(GameObject window)
     {
-        setVisible(false);
+        if (selectedButton != BtnType.Settings) return;
+            window.SetActive(true);
     }
-    public void SettingsPressed()
+    public void SwitchToExit(GameObject window)
     {
-        setVisible(false);
+        if (selectedButton != BtnType.Exit) return;
+            window.SetActive(true);
+    }
+    public void ButtonPressed(MenuButton button)
+    {
+        if (selectedButton != button.type)
+        {
+            if (Abs(button.type - selectedButton) == 1 || (4 - Abs(button.type - selectedButton)) == 1)
+            {
+                if (selectedButton - button.type == numOfBtns - 1)
+                    rotate(-1);
+                else if (selectedButton - button.type == 1 - numOfBtns)
+                    rotate(1);
+                else
+                    rotate(selectedButton - button.type);
+            }
+            
+            return;
+        }
+        button.Pressed();
+        gameObject.SetActive(false);
+    }
+    private void rotate(float dir)
+    {
+        if ((Time.time - lastInput) > inputCd)
+        {
+            lastInput = Time.time;
+            if (dir < 0.0f)
+            {
+                rotatingRight = true;
+            }
+            else
+            {
+                rotatingLeft = true;
+            }
+            animationStart = Time.time;
+        }
     }
 
     public void Update()
     {
-        if ( ( Abs(Input.GetAxis("Horizontal")) > 0.0f ) && (Time.time - lastInput) > inputCd ){
-            lastInput = Time.time;
-            if (Input.GetAxis("Horizontal") < 0.0f){
-                rotatingRight = true;
-            } else {
-                rotatingLeft = true;
-            }
-            animationStart = Time.time;
+        if (Abs(Input.GetAxis("Horizontal")) > 0.0f)
+        {
+            rotate(Input.GetAxis("Horizontal"));
         }
         if (rotatingRight){
             if ( Abs(rotationCurr - angularVelocity * Time.deltaTime) < angleBetweenBtns )
@@ -120,16 +153,17 @@ public class MainWindow : MonoBehaviour
             RearrangeButtons();
         
         if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart - Time.deltaTime) > animationTime ){
-            btns[selectedButton].setWiggled(false);
+            btns[(int)selectedButton].setWiggled(false);
             if (rotatingRight)
-                selectedButton = (selectedButton + 1)%numOfBtns;
+                selectedButton = (BtnType)(((int)selectedButton + 1) % numOfBtns);
             else
-                selectedButton = (selectedButton + 3)%numOfBtns;
-            btns[selectedButton].setWiggled(true);
+                selectedButton = (BtnType)(((int)selectedButton + numOfBtns - 1) % numOfBtns);
+            btns[(int)selectedButton].setWiggled(true);
             rotationCurr = 0;
             RearrangeButtons();
             rotatingLeft = rotatingRight = false;
         }
+        Debug.Log(selectedButton);
     }
 
 }

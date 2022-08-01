@@ -6,16 +6,11 @@ public class InfoWindow : MonoBehaviour
 {
     private void Awake()
     {
-        setVisible(false);
-    }
-
-    public void setVisible(bool isVisible)
-    {
-        gameObject.SetActive(isVisible);
+        gameObject.SetActive(false);
     }
 
     public void BackClick()
     {
-        setVisible(false);
+        gameObject.SetActive(false);
     }
 }

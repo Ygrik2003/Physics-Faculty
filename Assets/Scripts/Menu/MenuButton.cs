@@ -5,6 +5,14 @@ using static System.Math;
 
 public class MenuButton : MonoBehaviour
 {
+    public enum BtnType
+    {
+        Start,
+        Settings,
+        Exit,
+        Info
+    }
+    
     private bool isWiggled = false;
     private float rotation = 0.0f;
 
@@ -13,6 +21,8 @@ public class MenuButton : MonoBehaviour
 
     [SerializeField] AudioClip highlightedClip;
     [SerializeField] AudioClip pressedClip;
+
+    [SerializeField] public BtnType type;
 
 
 

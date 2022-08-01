@@ -7,17 +7,12 @@ public class ExitWindow : MonoBehaviour
 
     private void Awake()
     {
-        setVisible(false);
-    }
-
-    public void setVisible(bool isVisible)
-    {
-        gameObject.SetActive(isVisible);
+        gameObject.SetActive(false);
     }
 
     public void CancelClick()
     {
-        setVisible(false);
+        gameObject.SetActive(false);
     }
 
     public void ExitClick()

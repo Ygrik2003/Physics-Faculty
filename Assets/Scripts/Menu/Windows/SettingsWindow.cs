@@ -23,29 +23,24 @@ public class SettingsWindow : MonoBehaviour
         new SettingsManager.Resolution(1200, 900),
     };
 
-    private void Awake()
+    private void Start()
     {
+        SettingsManager.InitManager();
         foreach (SettingsManager.Resolution res in resolutions)
             settingResolution.GetComponentInChildren<TMP_Dropdown>().options.Add(new TMP_Dropdown.OptionData() { text = res.ToString() });
-        setVisible(false);
+        InitSliderEvents(settingFPS, SettingsManager.settings.FPS);
+        InitSliderEvents(settingMasterVolume, SettingsManager.settings.volumeMaster);
+        InitSliderEvents(settingMusicVolume, SettingsManager.settings.volumeMusic);
+        InitSliderEvents(settingSoundVolume, SettingsManager.settings.volumeSound);
+
+        settingResolution.GetComponentInChildren<TMP_Dropdown>().value = Utils.IndexOf(resolutions, SettingsManager.settings.resolution);
+
+        settingFSM.GetComponentInChildren<Toggle>().isOn = SettingsManager.settings.isFullSreen;
         
+
+        gameObject.SetActive(false);
     }
 
-    public void setVisible(bool isVisible)
-    {
-        gameObject.SetActive(isVisible);
-        if (isVisible)
-        {
-            InitSliderEvents(settingFPS, SettingsManager.settings.FPS);
-            InitSliderEvents(settingMasterVolume, SettingsManager.settings.volumeMaster);
-            InitSliderEvents(settingMusicVolume, SettingsManager.settings.volumeMusic);
-            InitSliderEvents(settingSoundVolume, SettingsManager.settings.volumeSound);
-
-            settingResolution.GetComponentInChildren<TMP_Dropdown>().value = Utils.IndexOf(resolutions, SettingsManager.settings.resolution);
-            
-            settingFSM.GetComponentInChildren<Toggle>().isOn = SettingsManager.settings.isFullSreen;
-        }
-    }
 
     private void InitSliderEvents(GameObject obj, float InitValue)
     {
