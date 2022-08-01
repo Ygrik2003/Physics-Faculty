@@ -58,7 +58,7 @@ public class MainWindow : MonoBehaviour
 
     private Vector3 CalcScale()
     {
-        float xyScale = minScale + (Abs( rotationCurr - 180 )/180.0f) * (maxScale - minScale);
+        float xyScale = minScale + (Abs( (rotationCurr + 360)%360 - 180 )/180.0f) * (maxScale - minScale);
         return new Vector3( xyScale, xyScale , 1 );
     }
 
@@ -86,6 +86,7 @@ public class MainWindow : MonoBehaviour
     }
     public void StartPressed()
     {
+        setVisible(false);
         SceneManager.LoadScene("GameScene");
     }
     public void InfoPressed()
@@ -99,39 +100,35 @@ public class MainWindow : MonoBehaviour
 
     public void Update()
     {
-        if (gameObject.activeInHierarchy)
-        {
-            if ( ( Abs(Input.GetAxis("Horizontal")) > 0.0f ) && (Time.time - lastInput) > inputCd ){
-                lastInput = Time.time;
-                if (Input.GetAxis("Horizontal") > 0.0f){
-                    rotatingRight = true;
-                } else {
-                    rotatingLeft = true;
-                }
-                animationStart = Time.time;
-                //RearrangeButtons();
+        if ( ( Abs(Input.GetAxis("Horizontal")) > 0.0f ) && (Time.time - lastInput) > inputCd ){
+            lastInput = Time.time;
+            if (Input.GetAxis("Horizontal") < 0.0f){
+                rotatingRight = true;
+            } else {
+                rotatingLeft = true;
             }
-
-            if (rotatingRight){
+            animationStart = Time.time;
+        }
+        if (rotatingRight){
+            if ( Abs(rotationCurr - angularVelocity * Time.deltaTime) < angleBetweenBtns )
                 rotationCurr -= angularVelocity * Time.deltaTime;
-            } else if (rotatingLeft){
-                rotationCurr += angularVelocity * Time.deltaTime;
-            }
-
-            if (rotatingLeft || rotatingRight)
-                RearrangeButtons();
-            
-            if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart) > animationTime ){
-                btns[selectedButton].setWiggled(false);
-                if (rotatingRight)
-                    selectedButton = (selectedButton + 1)%numOfBtns;
-                else
-                    selectedButton = (selectedButton + 3)%numOfBtns;
-                btns[selectedButton].setWiggled(true);
-                rotationCurr = 0;
-                RearrangeButtons();
-                rotatingLeft = rotatingRight = false;
-            }
+        } else if (rotatingLeft){
+            if ( (rotationCurr + angularVelocity * Time.deltaTime) < angleBetweenBtns )
+            rotationCurr += angularVelocity * Time.deltaTime;
+        }
+        if (rotatingLeft || rotatingRight)
+            RearrangeButtons();
+        
+        if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart - Time.deltaTime) > animationTime ){
+            btns[selectedButton].setWiggled(false);
+            if (rotatingRight)
+                selectedButton = (selectedButton + 1)%numOfBtns;
+            else
+                selectedButton = (selectedButton + 3)%numOfBtns;
+            btns[selectedButton].setWiggled(true);
+            rotationCurr = 0;
+            RearrangeButtons();
+            rotatingLeft = rotatingRight = false;
         }
     }
 
