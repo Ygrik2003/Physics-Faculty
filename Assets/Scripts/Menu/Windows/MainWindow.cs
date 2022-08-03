@@ -87,8 +87,7 @@ public class MainWindow : MonoBehaviour
     }
     public void SwitchToInfo(GameObject window)
     {
-        if (selectedButton != BtnType.Info) return;
-            window.SetActive(true);
+        SceneManager.LoadScene("GameScene");
     }
     public void SwitchToSettings(GameObject window)
     {
