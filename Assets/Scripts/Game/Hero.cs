@@ -16,6 +16,8 @@ public class Hero : MonoBehaviour
     private bool canRun = false, canJump = false, canDoubleJump = true;
     private int count = 0;
     private bool touchesSmth = false;
+
+    public Vector2 moveVector;
     
 
     void Start()
@@ -24,7 +26,13 @@ public class Hero : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void RunToRight()
+    void walk()
+    {
+        moveVector.x = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveVector.x * speed, rb.velocity.y);
+    }
+
+    /*private void RunToRight()
     {
         if ((Time.timeSinceLevelLoad - lastRun) > runCD){
             rb.velocity += new Vector2(speed, 0);
@@ -38,7 +46,7 @@ public class Hero : MonoBehaviour
             rb.velocity -= new Vector2(speed, 0);
             lastRun = Time.timeSinceLevelLoad;
         }
-    }
+    }*/
 
     private void Jump()
     {
@@ -83,6 +91,17 @@ public class Hero : MonoBehaviour
                 break;
             }
         }
+        
+        for (int i = 0; i < count; i++)
+        {
+            if (res[i].attachedRigidbody.gameObject.name == "Tiles")
+            {
+                canRun = true;
+                canJump = true;
+                canDoubleJump = true;
+                break;
+            }
+        }
     }
     void FixedUpdate()
     {
@@ -91,7 +110,9 @@ public class Hero : MonoBehaviour
             Jump();
         }
 
-        if (Input.GetKey("d"))
+        walk();
+
+        /*if (Input.GetKey("d"))
         {
             chooseDirection(1);
             if (canRun)
@@ -103,7 +124,7 @@ public class Hero : MonoBehaviour
             chooseDirection(0);
             if (canRun)
                 RunToLeft();
-        }
+        }*/
 
 
         if (rb.velocity.x > 0){
