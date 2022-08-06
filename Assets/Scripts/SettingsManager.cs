@@ -70,7 +70,7 @@ public class SettingsManager : MonoBehaviour
             Debug.Log("Import settings from PlayerPrefs");
             settings = JsonUtility.FromJson<Settings>(PlayerPrefs.GetString("Settings"));
 
-            Debug.Log(settings.ToString());
+            Debug.Log(JsonUtility.ToJson(settings));
 
             Screen.SetResolution(settings.resolution.width, settings.resolution.height, settings.isFullSreen);
             Time.fixedDeltaTime = 1f / settings.FPS;
