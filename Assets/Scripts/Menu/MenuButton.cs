@@ -40,11 +40,12 @@ public class MenuButton : MonoBehaviour
         //SoundSource.source = GetComponent<AudioSource>();
     }
 
-    void FixedUpdate()
+    void FixedUpdate()  
     {
         if (isWiggled)
         {
-            transform.Rotate(0, 5 * Abs(rotateStep) * Time.fixedDeltaTime, rotateStep * Time.fixedDeltaTime);
+            transform.RotateAround(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0, 0, 1), 20 * Time.fixedDeltaTime); //wtf
+            //transform.Rotate(0, 5 * Abs(rotateStep) * Time.fixedDeltaTime, rotateStep * Time.fixedDeltaTime);
             rotation += rotateStep * Time.fixedDeltaTime;
             if (Abs(rotation) > rotateMax)
                 rotateStep = -rotateStep;
