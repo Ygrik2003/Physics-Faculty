@@ -1,82 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static System.Math;
 using static System.Convert;
 
 public class Hero : MonoBehaviour
 {
-    [SerializeField] private float speed = 0.5f;
+    [SerializeField] private float speed = 0.7f;
     [SerializeField] private float jumpForce = 0.1f;
-    Rigidbody2D rb;
-    Collider2D[] res = new Collider2D[3];
-    ContactFilter2D filter;
-    private float lastRun = 0, lastJump = 0;
     [SerializeField] private float runCD = 0.1f, jumpCD = 0.5f;
-    private int direction = 0;
+
+    private Rigidbody2D rb;
+    private Collider2D[] res = new Collider2D[3];
+    private ContactFilter2D filter;
+    private SpriteRenderer sprite;
+
     private bool canRun = false, canJump = false, canDoubleJump = true;
     private int count = 0;
     private bool touchesSmth = false;
-    
+
 
     void Start()
     {
         filter.NoFilter();
         rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponentInChildren<SpriteRenderer>();
     }
 
-    private void RunToRight()
-    {
-        if ((Time.timeSinceLevelLoad - lastRun) > runCD){
-            rb.velocity += new Vector2(speed, 0);
-            lastRun = Time.timeSinceLevelLoad;
-        }
-    }
 
-    private void RunToLeft()
+    private void Run()
     {
-        if ((Time.timeSinceLevelLoad - lastRun) > runCD){
-            rb.velocity -= new Vector2(speed, 0);
-            lastRun = Time.timeSinceLevelLoad;
-        }
+        rb.velocity = new Vector2(speed * Input.GetAxis("Horizontal"), rb.velocity.y);
+
+        sprite.flipX = Input.GetAxis("Horizontal") < 0;
     }
 
     private void Jump()
     {
-        if ((Time.timeSinceLevelLoad - lastJump) > jumpCD){
-            if (!canJump){
-                canDoubleJump = false;
-            }
-            rb.velocity += new Vector2(0, jumpForce);
-            lastJump = Time.timeSinceLevelLoad;
+        rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+        if (!canJump)
+        {
+            canDoubleJump = false;
         }
+
     }
 
-    private void chooseDirection(int newDirection){
-        if (newDirection == direction)
-            return;
-
-        direction = newDirection;
-        transform.RotateAround(this.transform.position, Vector3.up, 180);
-    }
-
-    private void CheckGround() 
+    private void CheckGround()
     {
         for (int i = 0; i < count; i++)
         {
             res[i] = new Collider2D();
         }
 
-        count = rb.OverlapCollider( filter, res );
+        count = rb.OverlapCollider(filter, res);
         touchesSmth = !(count == 0);
 
-        if (!touchesSmth){
+        if (!touchesSmth)
+        {
             canRun = false;
             canJump = false;
             return;
         }
 
-        for (int i = 0; i < count; i++){
-            if (res[i].attachedRigidbody.gameObject.name == "Ground"){
+        for (int i = 0; i < count; i++)
+        {
+            if (res[i].attachedRigidbody.gameObject.name == "Ground")
+            {
                 canRun = true;
                 canJump = true;
                 canDoubleJump = true;
@@ -84,35 +73,17 @@ public class Hero : MonoBehaviour
             }
         }
     }
-    void FixedUpdate()
+    void Update()
     {
-        if (Input.GetKey("space") && (canJump || canDoubleJump ) )
+        if (Input.GetKeyDown("space") && (canJump || canDoubleJump))
         {
             Jump();
         }
 
-        if (Input.GetKey("d"))
-        {
-            chooseDirection(1);
-            if (canRun)
-                RunToRight();
-        }
+        if (Abs(Input.GetAxis("Horizontal")) > 0.0f && canRun)
+            Run();
 
-        if (Input.GetKey("a"))
-        {
-            chooseDirection(0);
-            if (canRun)
-                RunToLeft();
-        }
-
-
-        if (rb.velocity.x > 0){
-           chooseDirection(1);
-        } else if (rb.velocity.x < 0){
-            chooseDirection(0);
-        }
 
         CheckGround();
-        Debug.Log(canRun);
     }
 }

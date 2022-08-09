@@ -505,6 +505,7 @@ GameObject:
   m_Component:
   - component: {fileID: 518970876}
   - component: {fileID: 518970877}
+  - component: {fileID: 518970878}
   m_Layer: 5
   m_Name: PauseWindow
   m_TagString: Untagged
@@ -546,6 +547,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88d8447d011bd274094142e3ac257631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!223 &518970878
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518970875}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 999
+  m_TargetDisplay: 0
 --- !u!1 &641972883
 GameObject:
   m_ObjectHideFlags: 0
@@ -1454,7 +1476,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -17}
+  m_Offset: {x: 0, y: -16.3}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1463,9 +1485,9 @@ BoxCollider2D:
     adaptiveTilingThreshold: 0.121
     drawMode: 2
     adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_AutoTiling: 1
   serializedVersion: 2
-  m_Size: {x: 883.1792, y: 34}
+  m_Size: {x: 481.7, y: 45.3}
   m_EdgeRadius: 0
 --- !u!114 &1598469324
 MonoBehaviour:
