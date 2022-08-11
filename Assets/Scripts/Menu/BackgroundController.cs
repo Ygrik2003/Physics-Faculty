@@ -16,7 +16,7 @@ public class BackgroundController : MonoBehaviour
     private float scaleX, scaleY;
     void Start()
     {
-        transformSprite = GetComponentInChildren<Transform>();
+        transformSprite = gameObject.transform;
         //transformSprite.localScale *= baseScale;
     }
 
@@ -38,11 +38,8 @@ public class BackgroundController : MonoBehaviour
 
         }
 
-        //Debug.Log(transformSprite.position);
-
-        //transformSprite.localPosition = new Vector3(scaleX * radius * (float)Cos(angle), scaleY * radius * (float)Sin(angle), 0);
-        
-        //angle += (stepAngle * Time.fixedDeltaTime) % 360;
+        transformSprite.localPosition = new Vector3(scaleX * radius * (float)Cos(angle), scaleY * radius * (float)Sin(angle), 0);
+        angle += ( (Random.Range(0f, 1f) > 0.5f ? -1 : 1) * stepAngle * Random.Range(0.7f, 1f)  * Time.fixedDeltaTime) % 360;
     }
 
 }

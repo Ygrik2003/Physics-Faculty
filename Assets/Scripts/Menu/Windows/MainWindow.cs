@@ -62,7 +62,7 @@ public class MainWindow : MonoBehaviour
 
     private void RearrangeButtons()
     {
-        int currButtonToDraw = (int)selectedButton;
+        int currButtonToDraw = selectedButton;
         int tempX, tempY;
         while (true)
         {
@@ -72,31 +72,12 @@ public class MainWindow : MonoBehaviour
             BtnsTransform[currButtonToDraw].localScale = CalcScale();
             rotationCurr += angleBetweenBtns;
             currButtonToDraw = (currButtonToDraw + 1) % numOfBtns;
-            if (currButtonToDraw == (int)selectedButton)
+            if (currButtonToDraw == selectedButton)
                 break;
         }
         rotationCurr -= 360f;
     }
-    public void SwitchToStart()
-    {
-        if (selectedButton != BtnType.Start) return;
-            SceneManager.LoadScene("GameScene");
-    }
-    public void SwitchToInfo(GameObject window)
-    {
-        if (selectedButton != BtnType.Info) return;
-            window.SetActive(true);
-    }
-    public void SwitchToSettings(GameObject window)
-    {
-        if (selectedButton != BtnType.Settings) return;
-            window.SetActive(true);
-    }
-    public void SwitchToExit(GameObject window)
-    {
-        if (selectedButton != BtnType.Exit) return;
-            window.SetActive(true);
-    }
+    
     public void ButtonPressed(MenuButton button)
     {
         if (selectedButton != button.type)
@@ -113,12 +94,20 @@ public class MainWindow : MonoBehaviour
             
             return;
         }
-        button.Pressed();
-        gameObject.SetActive(false);
+        if (button.OverlapWindow)
+            gameObject.SetActive(false);
+        else
+            ignoreInput = true;
+        button.scriptToStart.gameObject.SetActive(true);
     }
+
+    public void setIgnoreInput(bool newState){
+        ignoreInput = newState;
+    }
+
     private void rotate(float dir)
     {
-        if ((Time.time - lastInput) > inputCd)
+        if ((Time.time - lastInput) > rotateCd)
         {
             lastInput = Time.time;
             if (dir > 0.0f)
@@ -135,24 +124,33 @@ public class MainWindow : MonoBehaviour
 
     public void Update()
     {
-        if (Abs(Input.GetAxis("Horizontal")) > 0.0f)
+        // Input Processing
+        if (Abs(Input.GetAxis("Horizontal")) > 0.0f && !ignoreInput)
         {
             rotate(Input.GetAxis("Horizontal"));
         }
+
+        if ( (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return)) && !ignoreInput ) {
+            ButtonPressed(btns[selectedButton]);
+        }
+
+
+        // Rotation Animation
         if (rotatingRight){
             if ( Abs(rotationCurr - angularVelocity * Time.deltaTime) < angleBetweenBtns )
                 rotationCurr -= angularVelocity * Time.deltaTime;
         } else if (rotatingLeft){
             if ( (rotationCurr + angularVelocity * Time.deltaTime) < angleBetweenBtns )
-            rotationCurr += angularVelocity * Time.deltaTime;
+                rotationCurr += angularVelocity * Time.deltaTime;
         }
+
         if (rotatingLeft || rotatingRight)
             RearrangeButtons();
         
         if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart - Time.deltaTime) > animationTime ){
             BtnsScript[(int)selectedButton].setWiggled(false);
             if (rotatingRight)
-                selectedButton = (BtnType)(((int)selectedButton + 1) % numOfBtns);
+                selectedButton = (selectedButton + 1) % numOfBtns;
             else
                 selectedButton = (BtnType)(((int)selectedButton + numOfBtns - 1) % numOfBtns);
             BtnsScript[(int)selectedButton].setWiggled(true);

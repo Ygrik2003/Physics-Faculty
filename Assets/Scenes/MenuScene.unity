@@ -442,7 +442,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44961684}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -451,12 +451,12 @@ RectTransform:
   - {fileID: 1665592776}
   - {fileID: 1773755092}
   m_Father: {fileID: 852437919}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: -0.000061035156, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &44961686
 MonoBehaviour:
@@ -1761,7 +1761,6 @@ GameObject:
   - component: {fileID: 264378627}
   - component: {fileID: 264378626}
   - component: {fileID: 264378625}
-  - component: {fileID: 264378621}
   - component: {fileID: 264378620}
   m_Layer: 5
   m_Name: StartBtn
@@ -2567,13 +2566,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 383973709}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68634a0594f3d2c4ea42f618f0bd01dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepAngle: 0.01
-  radius: 1
+  stepAngle: 4
+  radius: 5
 --- !u!1 &394716447
 GameObject:
   m_ObjectHideFlags: 0
@@ -4454,7 +4453,7 @@ RectTransform:
   - {fileID: 1694930038}
   - {fileID: 1495710101}
   m_Father: {fileID: 852437919}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4567,8 +4566,8 @@ RectTransform:
   m_Children:
   - {fileID: 383973710}
   - {fileID: 891519693}
-  - {fileID: 834304268}
   - {fileID: 44961685}
+  - {fileID: 834304268}
   - {fileID: 639363344}
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -5097,9 +5096,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 891519692}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
+      - m_Target: {fileID: 891519694}
+        m_TargetAssemblyTypeName: MainWindow, Assembly-CSharp
+        m_MethodName: setIgnoreInput
         m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5107,7 +5106,7 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 1
+          m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &962518203
 MonoBehaviour:
@@ -7996,7 +7995,6 @@ GameObject:
   - component: {fileID: 1632156484}
   - component: {fileID: 1632156483}
   - component: {fileID: 1632156482}
-  - component: {fileID: 1632156485}
   - component: {fileID: 1632156486}
   m_Layer: 5
   m_Name: InfoBtn
@@ -8131,63 +8129,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1632156475}
   m_CullTransparentMesh: 1
---- !u!114 &1632156485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1632156475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1632156486}
-          m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-          m_MethodName: Highlighted
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1632156486}
-          m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-          m_MethodName: setWiggled
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-  - eventID: 1
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1632156486}
-          m_TargetAssemblyTypeName: MenuButton, Assembly-CSharp
-          m_MethodName: setWiggled
-          m_Mode: 6
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1632156486
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8875,7 +8816,6 @@ GameObject:
   - component: {fileID: 1742450710}
   - component: {fileID: 1742450709}
   - component: {fileID: 1742450704}
-  - component: {fileID: 1742450712}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -8981,8 +8921,8 @@ MonoBehaviour:
         m_MethodName: SwitchToExit
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 834304267}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
