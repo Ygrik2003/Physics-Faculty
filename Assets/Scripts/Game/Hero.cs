@@ -90,11 +90,7 @@ public class Hero : MonoBehaviour
                 canDoubleJump = true;
                 break;
             }
-        }
-        
-        for (int i = 0; i < count; i++)
-        {
-            if (res[i].attachedRigidbody.gameObject.name == "Tiles")
+            if (res[i].attachedRigidbody.transform.parent.name == "Tiles")
             {
                 canRun = true;
                 canJump = true;
