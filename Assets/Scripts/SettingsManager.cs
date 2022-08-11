@@ -44,7 +44,7 @@ public class SettingsManager : MonoBehaviour
         PlayerPrefs.SetString("Settings", JsonUtility.ToJson(settings));
 
         Screen.SetResolution(settings.resolution.width, settings.resolution.height, settings.isFullSreen);
-        Time.fixedDeltaTime = 1f / settings.FPS;
+        Time.fixedDeltaTime = 1f / (settings.FPS > 0 ? settings.FPS : 1000);
         Application.targetFrameRate = settings.FPS;
     }
 

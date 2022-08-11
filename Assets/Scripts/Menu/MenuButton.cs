@@ -45,10 +45,12 @@ public class MenuButton : MonoBehaviour
         if (isWiggled)
         {
             //transform.RotateAround(new Vector3(0.5f, 0.5f, 0.5f), new Vector3(0, 0, 1), 20 * Time.fixedDeltaTime); //wtf
-            transform.Rotate(0, 5 * Abs(rotateStep) * Time.fixedDeltaTime, rotateStep * Time.fixedDeltaTime);
+            transform.Rotate(0, 10 * rotateStep * Time.fixedDeltaTime, rotateStep * Time.fixedDeltaTime);
             rotation += rotateStep * Time.fixedDeltaTime;
-            if (Abs(rotation) > rotateMax)
+            if (Abs(rotation) > rotateMax){
                 rotateStep = -rotateStep;
+                rotation = Sign(rotation) * rotateMax;
+            }
         }
     }
 
