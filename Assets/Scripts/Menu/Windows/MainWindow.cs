@@ -45,8 +45,6 @@ public class MainWindow : MonoBehaviour
         }
         BtnsScript[0].setWiggled(true);
 
-        print(numOfBtns);
-
         angleBetweenBtns = 360f / numOfBtns;
         angularVelocity = angleBetweenBtns / animationTime;
 
@@ -62,7 +60,7 @@ public class MainWindow : MonoBehaviour
 
     private void RearrangeButtons()
     {
-        int currButtonToDraw = selectedButton;
+        int currButtonToDraw = (int) selectedButton;
         int tempX, tempY;
         while (true)
         {
@@ -72,12 +70,33 @@ public class MainWindow : MonoBehaviour
             BtnsTransform[currButtonToDraw].localScale = CalcScale();
             rotationCurr += angleBetweenBtns;
             currButtonToDraw = (currButtonToDraw + 1) % numOfBtns;
-            if (currButtonToDraw == selectedButton)
+            if (currButtonToDraw == (int) selectedButton)
                 break;
         }
         rotationCurr -= 360f;
     }
     
+    public void SwitchToStart()
+    {
+        if (selectedButton != BtnType.Start) return;
+            SceneManager.LoadScene("GameScene");
+    }
+    public void SwitchToInfo(GameObject window)
+    {
+        if (selectedButton != BtnType.Info) return;
+            window.SetActive(true);
+    }
+    public void SwitchToSettings(GameObject window)
+    {
+        if (selectedButton != BtnType.Settings) return;
+            window.SetActive(true);
+    }
+    public void SwitchToExit(GameObject window)
+    {
+        if (selectedButton != BtnType.Exit) return;
+            window.SetActive(true);
+    }
+
     public void ButtonPressed(MenuButton button)
     {
         if (selectedButton != button.type)
@@ -85,29 +104,22 @@ public class MainWindow : MonoBehaviour
             if (Abs(button.type - selectedButton) == 1 || (4 - Abs(button.type - selectedButton)) == 1)
             {
                 if (selectedButton - button.type == numOfBtns - 1)
-                    rotate(1);
-                else if (selectedButton - button.type == 1 - numOfBtns)
                     rotate(-1);
+                else if (selectedButton - button.type == 1 - numOfBtns)
+                    rotate(1);
                 else
-                    rotate(button.type - selectedButton);
+                    rotate(selectedButton - button.type);
             }
             
             return;
         }
-        if (button.OverlapWindow)
-            gameObject.SetActive(false);
-        else
-            ignoreInput = true;
-        button.scriptToStart.gameObject.SetActive(true);
-    }
-
-    public void setIgnoreInput(bool newState){
-        ignoreInput = newState;
+        button.Pressed();
+        gameObject.SetActive(false);
     }
 
     private void rotate(float dir)
     {
-        if ((Time.time - lastInput) > rotateCd)
+        if ((Time.time - lastInput) > inputCd)
         {
             lastInput = Time.time;
             if (dir > 0.0f)
@@ -125,13 +137,13 @@ public class MainWindow : MonoBehaviour
     public void Update()
     {
         // Input Processing
-        if (Abs(Input.GetAxis("Horizontal")) > 0.0f && !ignoreInput)
+        if (Abs(Input.GetAxis("Horizontal")) > 0.0f)
         {
             rotate(Input.GetAxis("Horizontal"));
         }
 
-        if ( (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return)) && !ignoreInput ) {
-            ButtonPressed(btns[selectedButton]);
+        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return)) {
+            ButtonPressed(BtnsScript[ (int) selectedButton]);
         }
 
 
@@ -150,7 +162,7 @@ public class MainWindow : MonoBehaviour
         if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart - Time.deltaTime) > animationTime ){
             BtnsScript[(int)selectedButton].setWiggled(false);
             if (rotatingRight)
-                selectedButton = (selectedButton + 1) % numOfBtns;
+                selectedButton = (BtnType)(( (int) selectedButton + 1) % numOfBtns);
             else
                 selectedButton = (BtnType)(((int)selectedButton + numOfBtns - 1) % numOfBtns);
             BtnsScript[(int)selectedButton].setWiggled(true);

@@ -1762,6 +1762,7 @@ GameObject:
   - component: {fileID: 264378626}
   - component: {fileID: 264378625}
   - component: {fileID: 264378620}
+  - component: {fileID: 264378621}
   m_Layer: 5
   m_Name: StartBtn
   m_TagString: Untagged
@@ -1801,7 +1802,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c039f380ab4c2df48937e3e90edc3b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateStep: 0.01
+  rotateStep: 1
   rotateMax: 3
   highlightedClip: {fileID: 8300000, guid: a02fb162cff70f04795e141249553b0f, type: 3}
   pressedClip: {fileID: 8300000, guid: bf7e31aad5e2ffc48988d8cd1e15cf97, type: 3}
@@ -8141,7 +8142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c039f380ab4c2df48937e3e90edc3b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateStep: 0.01
+  rotateStep: 1
   rotateMax: 3
   highlightedClip: {fileID: 8300000, guid: a02fb162cff70f04795e141249553b0f, type: 3}
   pressedClip: {fileID: 8300000, guid: bf7e31aad5e2ffc48988d8cd1e15cf97, type: 3}
@@ -8816,6 +8817,7 @@ GameObject:
   - component: {fileID: 1742450710}
   - component: {fileID: 1742450709}
   - component: {fileID: 1742450704}
+  - component: {fileID: 1742450712}
   m_Layer: 5
   m_Name: ExitBtn
   m_TagString: Untagged
@@ -8855,7 +8857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c039f380ab4c2df48937e3e90edc3b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotateStep: 0.01
+  rotateStep: 1
   rotateMax: 3
   highlightedClip: {fileID: 8300000, guid: a02fb162cff70f04795e141249553b0f, type: 3}
   pressedClip: {fileID: 8300000, guid: bf7e31aad5e2ffc48988d8cd1e15cf97, type: 3}
