@@ -13,11 +13,11 @@ public class MainWindow : MonoBehaviour
     [SerializeField] [Range(0f,2f)] private float inputCd = 0.5f;
     [SerializeField] [Range(0f,2f)] private float animationTime = 0.4f;
     [SerializeField] [Range(0f,1f)] private float minScale = 0.6f, maxScale = 1.2f;
-
-
+    [SerializeField] [Range(0f,1f)] private float maxShadowCoef = 0.9f;
 
     private bool rotatingRight = false, rotatingLeft = false;
     private float lastInput = 0;
+    private bool ignoreInput = false;
 
     private float angularVelocity;
     private float animationStart;
@@ -25,10 +25,13 @@ public class MainWindow : MonoBehaviour
     private float rotationCurr = 0f, angleBetweenBtns = 90f;
     private int numOfBtns;
 
-    private BtnType selectedButton = 0;
+    private int selectedButton = 0;
     private List<Transform> BtnsTransform = new();
     private List<MenuButton> BtnsScript = new();
+    private List<Renderer> BtnsRenderer = new();
     RectTransform scaler;
+
+    Renderer rend;
 
     public void Start()
     {
@@ -42,6 +45,7 @@ public class MainWindow : MonoBehaviour
         for (int i = 0; i < numOfBtns; i++){
             BtnsTransform.Add( scaler.GetChild(i) );
             BtnsScript.Add( scaler.GetChild(i).gameObject.GetComponent<MenuButton>() );
+            BtnsRenderer.Add(scaler.GetChild(i).gameObject.GetComponentInChildren<Renderer>() );
         }
         BtnsScript[0].setWiggled(true);
 
@@ -60,7 +64,7 @@ public class MainWindow : MonoBehaviour
 
     private void RearrangeButtons()
     {
-        int currButtonToDraw = (int) selectedButton;
+        int currButtonToDraw = selectedButton;
         int tempX, tempY;
         while (true)
         {
@@ -68,58 +72,45 @@ public class MainWindow : MonoBehaviour
             tempY = (int) (scaler.rect.center.y - (scaler.rect.height / 2) * Cos( rotationCurr * Acos(-1) /180 ));
             BtnsTransform[currButtonToDraw].localPosition = new Vector3(tempX, tempY, 0);
             BtnsTransform[currButtonToDraw].localScale = CalcScale();
+            if (BtnsRenderer[currButtonToDraw] != null){
+                BtnsRenderer[currButtonToDraw].material.SetFloat("_ShadowCoeff", maxShadowCoef * (1 - Abs( (rotationCurr + 360) % 360  - 180) / 180.0f) );
+            }
             rotationCurr += angleBetweenBtns;
             currButtonToDraw = (currButtonToDraw + 1) % numOfBtns;
-            if (currButtonToDraw == (int) selectedButton)
+            if (currButtonToDraw == selectedButton)
                 break;
         }
         rotationCurr -= 360f;
     }
-    
-    public void SwitchToStart()
-    {
-        if (selectedButton != BtnType.Start) return;
-            SceneManager.LoadScene("GameScene");
-    }
-    public void SwitchToInfo(GameObject window)
-    {
-        if (selectedButton != BtnType.Info) return;
-            window.SetActive(true);
-    }
-    public void SwitchToSettings(GameObject window)
-    {
-        if (selectedButton != BtnType.Settings) return;
-            window.SetActive(true);
-    }
-    public void SwitchToExit(GameObject window)
-    {
-        if (selectedButton != BtnType.Exit) return;
-            window.SetActive(true);
-    }
 
     public void ButtonPressed(MenuButton button)
     {
-        if (selectedButton != button.type)
-        {
-            if (Abs(button.type - selectedButton) == 1 || (4 - Abs(button.type - selectedButton)) == 1)
-            {
-                if (selectedButton - button.type == numOfBtns - 1)
-                    rotate(-1);
-                else if (selectedButton - button.type == 1 - numOfBtns)
-                    rotate(1);
-                else
-                    rotate(selectedButton - button.type);
+        if (button == BtnsScript[selectedButton]){
+            if (button.objToShow == null){
+                SceneManager.LoadScene("GameScene");
+                return;
             }
-            
+            button.objToShow.SetActive(true);
+            if (button.OverlapingWindow){
+                gameObject.SetActive(false);
+            } else
+                ignoreInput = true;
+
             return;
         }
-        button.Pressed();
-        gameObject.SetActive(false);
+        if ( button == BtnsScript[ (selectedButton + 1) % numOfBtns] )
+        {
+            rotate(1);
+        }
+        if ( button == BtnsScript[ (selectedButton + numOfBtns - 1) % numOfBtns] )
+        {
+            rotate(-1);
+        }
     }
 
     private void rotate(float dir)
     {
-        if ((Time.time - lastInput) > inputCd)
+        if ((Time.time - lastInput) > inputCd && !ignoreInput)
         {
             lastInput = Time.time;
             if (dir > 0.0f)
@@ -134,6 +125,11 @@ public class MainWindow : MonoBehaviour
         }
     }
 
+    public void setIgnoreInput(bool newState)
+    {
+        ignoreInput = newState;
+    }
+
     public void Update()
     {
         // Input Processing
@@ -142,8 +138,8 @@ public class MainWindow : MonoBehaviour
             rotate(Input.GetAxis("Horizontal"));
         }
 
-        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return)) {
-            ButtonPressed(BtnsScript[ (int) selectedButton]);
+        if  ( (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Return)) && !ignoreInput ){
+            ButtonPressed(BtnsScript[selectedButton]);
         }
 
 
@@ -160,12 +156,12 @@ public class MainWindow : MonoBehaviour
             RearrangeButtons();
         
         if ( (rotatingLeft || rotatingRight) && (Time.time - animationStart - Time.deltaTime) > animationTime ){
-            BtnsScript[(int)selectedButton].setWiggled(false);
+            BtnsScript[selectedButton].setWiggled(false);
             if (rotatingRight)
-                selectedButton = (BtnType)(( (int) selectedButton + 1) % numOfBtns);
+                selectedButton = (selectedButton + 1) % numOfBtns;
             else
-                selectedButton = (BtnType)(((int)selectedButton + numOfBtns - 1) % numOfBtns);
-            BtnsScript[(int)selectedButton].setWiggled(true);
+                selectedButton = (selectedButton + numOfBtns - 1) % numOfBtns;
+            BtnsScript[selectedButton].setWiggled(true);
             rotationCurr = 0;
             RearrangeButtons();
             rotatingLeft = rotatingRight = false;

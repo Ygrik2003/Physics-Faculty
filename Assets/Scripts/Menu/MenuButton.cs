@@ -22,8 +22,8 @@ public class MenuButton : MonoBehaviour
     [SerializeField] AudioClip highlightedClip;
     [SerializeField] AudioClip pressedClip;
 
-    [SerializeField] public BtnType type;
-
+    [SerializeField] public GameObject objToShow;
+    [SerializeField] public bool OverlapingWindow;
 
     public void Highlighted()
     {
@@ -55,7 +55,6 @@ public class MenuButton : MonoBehaviour
 
     public void setWiggled(bool isWiggled)
     {
-        print(type.ToString() + " is rotate: " + isWiggled);
         this.isWiggled = isWiggled;
     }
 }
