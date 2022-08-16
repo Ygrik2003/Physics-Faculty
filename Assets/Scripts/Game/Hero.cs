@@ -10,17 +10,17 @@ public class Hero : MonoBehaviour
     public int jumpForce = 10;
     private bool jumpControl;
     private int jumpIteration = 0;
-    public int jumpValueIteration = 60; //fps
+    public int jumpValueIteration = (int)(1 / Time.fixedDeltaTime); //fps
 
     public int lungeImpulse = 5000;
     private bool lockLunge = false;
-    
+
     public bool faceRight = true;
     public Rigidbody2D rb;
-    
+
     //We will have animations later
     //public Animator anim;
-    
+
     public bool onGround;
     public Transform GroundCheck;
     private float GroundCheckRadius;
@@ -33,7 +33,7 @@ public class Hero : MonoBehaviour
         GroundCheckRadius = GroundCheck.GetComponent<CircleCollider2D>().radius;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Walk();
         Reflect();
@@ -64,7 +64,7 @@ public class Hero : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             //rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            if (onGround) 
+            if (onGround)
             {
                 jumpControl = true;
             }
@@ -98,7 +98,7 @@ public class Hero : MonoBehaviour
 
             rb.velocity = new Vector2(0, 0);
 
-            if(!faceRight)
+            if (!faceRight)
             {
                 rb.AddForce(Vector2.left * lungeImpulse);
             }
@@ -119,82 +119,4 @@ public class Hero : MonoBehaviour
         onGround = Physics2D.OverlapCircle(GroundCheck.position, GroundCheckRadius, Ground);
         //anim.SetBool("onGround", onGround);
     }
-    //-------------------------------------------------------------------------------------------------------------------------------------------
-    /*[SerializeField] public float speed = 0.5f;
-    [SerializeField] public float jumpForce = 0.7f;
-    Rigidbody2D rb;
-    Collider2D[] res = new Collider2D[3];
-    ContactFilter2D filter;
-    private int direction = 0;
-    private bool canRun = false, canJump = false, canDoubleJump = true;
-    private int count = 0;
-    private bool touchesSmth = false;
-
-    public Vector2 moveVector;*/
-
-    /*private void Jump()
-    {
-        /*if ((Time.timeSinceLevelLoad - lastJump) > jumpCD){
-            if (!canJump){
-                canDoubleJump = false;
-            }
-            rb.velocity += new Vector2(0, jumpForce);
-            lastJump = Time.timeSinceLevelLoad;
-        }
-    }*/
-
-    /*private void chooseDirection(int newDirection){
-        if (newDirection == direction)
-            return;
-
-        direction = newDirection;
-        transform.RotateAround(this.transform.position, Vector3.up, 180);
-    }*/
-
-    /*private void CheckGround() 
-    {
-        for (int i = 0; i < count; i++)
-        {
-            res[i] = new Collider2D();
-        }
-
-        count = rb.OverlapCollider( filter, res );
-        touchesSmth = !(count == 0);
-
-        if (!touchesSmth){
-            canRun = false;
-            canJump = false;
-            return;
-        }
-
-        for (int i = 0; i < count; i++){
-            if (res[i].attachedRigidbody.gameObject.name == "Ground"){
-                canRun = true;
-                canJump = true;
-                canDoubleJump = true;
-                break;
-            }
-            if (res[i].attachedRigidbody.transform.parent.name == "Tiles")
-            {
-                canRun = true;
-                canJump = true;
-                canDoubleJump = true;
-                break;
-            }
-        }
-    }*/
-
-    /*void FixedUpdate()
-    {
-        walk();
-        Jump();
-
-        if (rb.velocity.x > 0){
-           chooseDirection(1);
-        } else if (rb.velocity.x < 0){
-            chooseDirection(0);
-        }
-
-        CheckGround();
-        Debug.Log(canRun);*/
 }
