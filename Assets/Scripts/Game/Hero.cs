@@ -10,7 +10,7 @@ public class Hero : MonoBehaviour
     public int jumpForce = 10;
     private bool jumpControl;
     private int jumpIteration = 0;
-    public int jumpValueIteration = 60; //fps
+    public int jumpValueIteration; //fps
 
     public int lungeImpulse = 5000;
     private bool lockLunge = false;
@@ -31,9 +31,10 @@ public class Hero : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         //anim = GetComponent<Animator>();
         GroundCheckRadius = GroundCheck.GetComponent<CircleCollider2D>().radius;
+        jumpValueIteration = (int)(1 / Time.fixedDeltaTime);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         Walk();
         Reflect();
@@ -63,27 +64,27 @@ public class Hero : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            //rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             if (onGround)
             {
-                jumpControl = true;
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                //jumpControl = true;
             }
         }
-        else
-        {
-            jumpControl = false;
-        }
-        if (jumpControl)
-        {
-            if (jumpIteration++ < jumpValueIteration)
-            {
-                rb.AddForce(Vector2.up * jumpForce / jumpIteration);
-            }
-        }
-        else
-        {
-            jumpIteration = 0;
-        }
+        //else
+        //{
+        //    jumpControl = false;
+        //}
+        //if (jumpControl)
+        //{
+        //    if (jumpIteration++ < jumpValueIteration)
+        //    {
+        //        rb.AddForce(Vector2.up * jumpForce / jumpIteration);
+        //    }
+        //}
+        //else
+        //{
+        //    jumpIteration = 0;
+        //}
     }
 
     void Lunge()
