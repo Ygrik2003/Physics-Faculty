@@ -73,8 +73,11 @@ public class SettingsManager : MonoBehaviour
             Debug.Log(JsonUtility.ToJson(settings));
 
             Screen.SetResolution(settings.resolution.width, settings.resolution.height, settings.isFullSreen);
-            Time.fixedDeltaTime = settings.FPS==0f ? 0.001f : 1f / settings.FPS; //Temp workaround, needs to be fixed
             Application.targetFrameRate = settings.FPS;
+            if (settings.FPS == 0)
+                Time.fixedDeltaTime = Time.deltaTime;
+            else
+                Time.fixedDeltaTime = 1f / settings.FPS;
         }
         else
         {

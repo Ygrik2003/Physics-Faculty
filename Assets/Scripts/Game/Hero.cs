@@ -1,89 +1,123 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static System.Math;
-using static System.Convert;
 
 public class Hero : MonoBehaviour
 {
-    [SerializeField] private float speed = 0.7f;
-    [SerializeField] private float jumpForce = 0.1f;
-    [SerializeField] private float runCD = 0.1f, jumpCD = 0.5f;
+    public Vector2 moveVector;
+    public int speed = 5;
 
-    private Rigidbody2D rb;
-    private Collider2D[] res = new Collider2D[3];
-    private ContactFilter2D filter;
-    private SpriteRenderer sprite;
+    public int jumpForce = 10;
+    private bool jumpControl;
+    private int jumpIteration = 0;
+    public int jumpValueIteration; //fps
 
-    private bool canRun = false, canJump = false, canDoubleJump = true;
-    private int count = 0;
-    private bool touchesSmth = false;
+    public int lungeImpulse = 5000;
+    private bool lockLunge = false;
 
+    public bool faceRight = true;
+    public Rigidbody2D rb;
+
+    //We will have animations later
+    //public Animator anim;
+
+    public bool onGround;
+    public Transform GroundCheck;
+    private float GroundCheckRadius;
+    public LayerMask Ground;
 
     void Start()
     {
-        filter.NoFilter();
         rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponentInChildren<SpriteRenderer>();
+        //anim = GetComponent<Animator>();
+        GroundCheckRadius = GroundCheck.GetComponent<CircleCollider2D>().radius;
+        jumpValueIteration = (int)(1 / Time.fixedDeltaTime);
     }
 
-
-    private void Run()
+    private void FixedUpdate()
     {
-        rb.velocity = new Vector2(speed * Input.GetAxis("Horizontal"), rb.velocity.y);
-
-        sprite.flipX = Input.GetAxis("Horizontal") < 0;
+        Walk();
+        Reflect();
+        Jump();
+        Lunge();
+        CheckingGround();
     }
 
-    private void Jump()
+    void Walk()
     {
-        rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-        if (!canJump)
-        {
-            canDoubleJump = false;
-        }
+        moveVector.x = Input.GetAxis("Horizontal");
+        rb.velocity = new Vector2(moveVector.x * speed, rb.velocity.y);
 
+        //anim.SetFloat("moveX", Mathf.Abs(moveVector.x));
     }
 
-    private void CheckGround()
+    void Reflect()
     {
-        for (int i = 0; i < count; i++)
+        if ((moveVector.x > 0 && !faceRight) || (moveVector.x < 0 && faceRight))
         {
-            res[i] = new Collider2D();
+            transform.localScale *= new Vector2(-1, 1);
+            faceRight = !faceRight;
         }
+    }
 
-        count = rb.OverlapCollider(filter, res);
-        touchesSmth = !(count == 0);
-
-        if (!touchesSmth)
+    void Jump()
+    {
+        if (Input.GetKey(KeyCode.Space))
         {
-            canRun = false;
-            canJump = false;
-            return;
-        }
-
-        for (int i = 0; i < count; i++)
-        {
-            if (res[i].attachedRigidbody.gameObject.name == "Ground")
+            if (onGround)
             {
-                canRun = true;
-                canJump = true;
-                canDoubleJump = true;
-                break;
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                //jumpControl = true;
+            }
+        }
+        //else
+        //{
+        //    jumpControl = false;
+        //}
+        //if (jumpControl)
+        //{
+        //    if (jumpIteration++ < jumpValueIteration)
+        //    {
+        //        rb.AddForce(Vector2.up * jumpForce / jumpIteration);
+        //    }
+        //}
+        //else
+        //{
+        //    jumpIteration = 0;
+        //}
+    }
+
+    void Lunge()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !lockLunge)
+        {
+            //anim.StopPlayback();
+            //anim.Play("lunge");
+
+            lockLunge = true;
+            Invoke("LungeLock", 2f);
+
+            rb.velocity = new Vector2(0, 0);
+
+            if (!faceRight)
+            {
+                rb.AddForce(Vector2.left * lungeImpulse);
+            }
+            else
+            {
+                rb.AddForce(Vector2.right * lungeImpulse);
             }
         }
     }
-    void Update()
+
+    void LungeLock()
     {
-        if (Input.GetKeyDown("space") && (canJump || canDoubleJump))
-        {
-            Jump();
-        }
+        lockLunge = false;
+    }
 
-        if (Abs(Input.GetAxis("Horizontal")) > 0.0f && canRun)
-            Run();
-
-
-        CheckGround();
+    void CheckingGround()
+    {
+        onGround = Physics2D.OverlapCircle(GroundCheck.position, GroundCheckRadius, Ground);
+        //anim.SetBool("onGround", onGround);
     }
 }

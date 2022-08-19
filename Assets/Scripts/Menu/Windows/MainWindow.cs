@@ -12,7 +12,7 @@ public class MainWindow : MonoBehaviour
     [SerializeField] private GameObject ButtonsObject;
     [SerializeField] [Range(0f,2f)] private float inputCd = 0.5f;
     [SerializeField] [Range(0f,2f)] private float animationTime = 0.4f;
-    [SerializeField] [Range(0f,1f)] private float minScale = 0.6f, maxScale = 1.2f;
+    [SerializeField] [Range(0f,2f)] private float minScale = 0.6f, maxScale = 1.2f;
     [SerializeField] [Range(0f,1f)] private float maxShadowCoef = 0.9f;
 
     private bool rotatingRight = false, rotatingLeft = false;
@@ -68,8 +68,8 @@ public class MainWindow : MonoBehaviour
         int tempX, tempY;
         while (true)
         {
-            tempX = (int) (scaler.rect.center.x + (scaler.rect.width / 2) * Sin( rotationCurr * Acos(-1) /180 ));
-            tempY = (int) (scaler.rect.center.y - (scaler.rect.height / 2) * Cos( rotationCurr * Acos(-1) /180 ));
+            tempX = (int) ((scaler.rect.width / 2) * Sin( rotationCurr * Acos(-1) /180 ));
+            tempY = (int) (- (scaler.rect.height / 2) * Cos( rotationCurr * Acos(-1) /180 ));
             BtnsTransform[currButtonToDraw].localPosition = new Vector3(tempX, tempY, 0);
             BtnsTransform[currButtonToDraw].localScale = CalcScale();
             if (BtnsRenderer[currButtonToDraw] != null){
@@ -86,6 +86,7 @@ public class MainWindow : MonoBehaviour
     public void ButtonPressed(MenuButton button)
     {
         if (button == BtnsScript[selectedButton]){
+            button.Pressed();
             if (button.objToShow == null){
                 SceneManager.LoadScene("GameScene");
                 return;
@@ -94,7 +95,7 @@ public class MainWindow : MonoBehaviour
             if (button.OverlapingWindow){
                 gameObject.SetActive(false);
             } else
-                ignoreInput = true;
+                setIgnoreInput(true);
 
             return;
         }
@@ -112,6 +113,7 @@ public class MainWindow : MonoBehaviour
     {
         if ((Time.time - lastInput) > inputCd && !ignoreInput)
         {
+            BtnsScript[selectedButton].Highlighted();
             lastInput = Time.time;
             if (dir > 0.0f)
             {
@@ -128,6 +130,17 @@ public class MainWindow : MonoBehaviour
     public void setIgnoreInput(bool newState)
     {
         ignoreInput = newState;
+        if (newState){
+            BtnsScript[selectedButton].setWiggled(false);
+            foreach ( Renderer item in BtnsRenderer)
+            {
+                if (item != null)
+                    item.material.SetFloat("_ShadowCoeff", maxShadowCoef);
+            }
+        } else {
+            BtnsScript[selectedButton].setWiggled(true);
+            RearrangeButtons();
+        }
     }
 
     public void Update()
